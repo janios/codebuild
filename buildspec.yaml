@@ -1,0 +1,36 @@
+version: 0.2
+
+env:
+  variables:
+    STACK: "a|b" # Ledger rabbit stack a|b
+    ENVIRONMENT: "dev|stage" # Current env
+    REGION: "us-west-2" # AWS region
+  parameter-store:
+    SECRET_CONTAINER: "/${ENVIRONMENT}/rmq/service-ap-journal/1"
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - apt-add-repository universe
+      - apt-get update -y
+      - apt-get install -y jq
+      - apt-get install uuid-runtime
+      - apt-get install software-properties-common -y
+      - apt-get install -y python3-behave
+      - pip3 install --upgrade pip
+      - pip3 install pika --user
+      - pip3 install boto3 --user
+      - pip3 install argparse --user
+      - pip3 install pytz --user
+      - pip3 install behave --user
+      - pip3 install behave-html-formatter --user
+  pre_build:
+    commands:
+      - cd codebuild/simple-scripts/ledger-qa-automation
+  build:
+    commands:
+      - mv ledger-qa-automation.sh ${CODEBUILD_SRC_DIR_payclip}/
+      - cd ${CODEBUILD_SRC_DIR_payclip}/
+      - ./ledger-qa-automation.sh
