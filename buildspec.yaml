@@ -28,9 +28,6 @@ phases:
       - pip3 install behave-html-formatter --user
   pre_build:
     commands:
-      - cd codebuild/simple-scripts/ledger-qa-automation
   build:
     commands:
-      - mv ledger-qa-automation.sh ${CODEBUILD_SRC_DIR_payclip}/
-      - cd ${CODEBUILD_SRC_DIR_payclip}/
       - ./ledger-qa-automation.sh
